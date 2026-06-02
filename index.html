@@ -1,1 +1,918 @@
-a
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mi Contrato Pionero - Acompañamiento Personal</title>
+    <!-- Google Fonts: Inter para la legibilidad de app de productividad, Fredoka sutil solo para títulos principales -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-app: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            
+            /* Paleta madura Notion / Stoic style */
+            --primary: #1e3a1e; /* Verde Bosque Profundo */
+            --primary-light: #f1f5f1;
+            --accent: #0f766e; /* Azul Teal / Enfoque */
+            --accent-light: #f0fdfa;
+            
+            --radius-md: 12px;
+            --radius-lg: 18px;
+            --shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+            --transition: all 0.2s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-app);
+            color: var(--text-main);
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 520px;
+            min-height: 100vh;
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        /* Vistas */
+        .view {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            animation: fadeIn 0.35s ease forwards;
+        }
+
+        .view.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Tipografías Modernas */
+        h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 2.2rem;
+            color: var(--primary);
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        /* Botones Estilo Aplicación de Productividad */
+        .btn {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 14px 24px;
+            border-radius: var(--radius-md);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--surface);
+            box-shadow: 0 4px 12px rgba(30, 58, 30, 0.15);
+        }
+        .btn-primary:hover { background-color: #152915; }
+        .btn-primary:active { transform: scale(0.98); }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover { background-color: #f1f5f9; color: var(--text-main); }
+
+        .btn-accent {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        /* --- PANTALLA 1: BIENVENIDA --- */
+        #view-welcome {
+            text-align: center;
+            padding: 60px 10px 20px 10px;
+            gap: 24px;
+        }
+
+        .welcome-badge {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            align-self: center;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        /* --- PANTALLA 2: RADIOGRAFÍA PERSONAL --- */
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 6px;
+            background: var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .survey-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .survey-statement {
+            font-size: 1.15rem;
+            font-weight: 500;
+            color: var(--text-main);
+            line-height: 1.4;
+        }
+
+        /* Control Segmentado de Frecuencia */
+        .frequency-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: var(--radius-md);
+            gap: 4px;
+        }
+
+        .freq-btn {
+            background: transparent;
+            border: none;
+            padding: 10px 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .freq-btn.selected {
+            background: var(--surface);
+            color: var(--primary);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        /* --- PANTALLA 3: DETECCIÓN DE ÁMBITOS --- */
+        .suggestion-box {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .suggestion-item {
+            background: var(--accent-light);
+            border-left: 4px solid var(--accent);
+            padding: 16px;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+        }
+
+        /* --- PANTALLA 4: ELECCIÓN DE PRIORIDADES --- */
+        .choice-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .choice-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .choice-card:hover { border-color: var(--text-muted); }
+        .choice-card.main-selected { border-color: var(--primary); background: var(--primary-light); }
+        .choice-card.sub-selected { border-color: var(--accent); background: var(--accent-light); }
+
+        .badge-indicator {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            color: white;
+        }
+        .badge-indicator.main { background: var(--primary); }
+        .badge-indicator.sub { background: var(--accent); }
+
+        /* --- PANTALLAS 5 y 6: FORMULARIOS / CAMPOS --- */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .input-field, .textarea-field {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 0.95rem;
+            background: var(--surface);
+            color: var(--text-main);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .input-field:focus, .textarea-field:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.08);
+        }
+
+        .textarea-field { height: 90px; resize: none; }
+
+        /* Lista Editable Dinámica */
+        .dynamic-list-item {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .btn-remove {
+            background: #fee2e2;
+            color: #ef4444;
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 0 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* --- PANTALLA 7: RESUMEN FINAL / DOCUMENTO --- */
+        .document-preview {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 28px 24px;
+            margin: 20px 0;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .doc-section {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 16px;
+        }
+        .doc-section:last-child { border-bottom: none; padding-bottom: 0; }
+
+        .doc-meta { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
+        .doc-body { font-size: 1rem; color: var(--text-main); font-weight: 500; }
+        
+        .doc-list { padding-left: 20px; font-size: 0.95rem; color: var(--text-main); }
+
+        .actions-stack { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+
+        /* Regla de impresión limpia para guardar como PDF real */
+        @media print {
+            body { background: white; }
+            .app-container { max-width: 100%; padding: 0; }
+            .view { display: none !important; }
+            #view-final { display: flex !important; }
+            .actions-stack, h2, p, label, .textarea-field { display: none !important; }
+            .document-preview { border: none; box-shadow: none; padding: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- PANTALLA 1: BIENVENIDA -->
+        <div id="view-welcome" class="view active">
+            <span class="welcome-badge">Rama Pioneros ⚜️</span>
+            <h1>Mi Contrato Pionero</h1>
+            <h2>Reflexiona, decide y comprométete</h2>
+            <p>El Contrato no es una autoevaluación estática; es tu mapa de ruta auto-elegido para exprimir tu potencial en esta etapa. Esta herramienta te acompañará a analizar tu realidad presente para definir compromisos de crecimiento reales, realistas y medibles.</p>
+            <button class="btn btn-primary" onclick="changeView('view-survey')">Comenzar la radiografía</button>
+        </div>
+
+        <!-- PANTALLA 2: RADIOGRAFÍA PERSONAL -->
+        <div id="view-survey" class="view">
+            <div class="progress-header">
+                <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted);" id="survey-step-txt">Ámbito 1 de 5</span>
+                <span style="font-size: 0.85rem; font-weight: 700; color: var(--accent);" id="survey-category-name">Yo mismo</span>
+            </div>
+            <div class="progress-track">
+                <div id="survey-progress" class="progress-fill"></div>
+            </div>
+
+            <div id="statements-container">
+                <!-- Se inyectan de forma atómica dinámicamente -->
+            </div>
+
+            <button class="btn btn-primary" id="btn-next-survey" onclick="nextSurveyStep()" style="margin-top: 12px;">Siguiente Ámbito</button>
+        </div>
+
+        <!-- PANTALLA 3: DETECCIÓN DE ÁMBITOS PRIORITARIOS -->
+        <div id="view-suggestions" class="view">
+            <h2>Ámbitos de Crecimiento Sugeridos</h2>
+            <p style="margin-top: 6px;">Tras evaluar tus respuestas, el sistema ha detectado estas áreas prioritarias donde podrías asumir nudos o retos enriquecedores para tu proyecto de vida:</p>
+            
+            <div class="suggestion-box" id="suggestions-box">
+                <!-- Inyectado por algoritmo -->
+            </div>
+
+            <button class="btn btn-primary" onclick="setupChoicesView()">Continuar a selección</button>
+        </div>
+
+        <!-- PANTALLA 4: ELECCIÓN DE PRIORIDAD -->
+        <div id="view-choices" class="view">
+            <h2>Elige tus Focos de Acción</h2>
+            <p style="margin-top: 6px;">Intentar abarcar demasiado diluye el impacto de las acciones. Selecciona con madurez estratégica tu prioridad principal del trimestre (y opcionalmente una secundaria).</p>
+            
+            <div class="choice-group" id="choices-container">
+                <!-- Bloques de selección -->
+            </div>
+
+            <button class="btn btn-primary" onclick="goToRealityAnalysis()">Analizar mi realidad</button>
+        </div>
+
+        <!-- PANTALLA 5: ANÁLISIS DE REALIDAD -->
+        <div id="view-reality" class="view">
+            <h2>Análisis de Realidad</h2>
+            <p id="reality-subtitle" style="margin-top: 4px; font-weight: 600; color: var(--accent);"></p>
+            <p style="margin-bottom: 20px;">Antes de proponer acciones, sitúate en tu momento actual:</p>
+
+            <div class="form-group">
+                <label>¿Por qué has elegido esta prioridad en este momento?</label>
+                <textarea class="textarea-field" id="real-q1" placeholder="Describe los motivos personales..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>¿Qué está ocurriendo actualmente en tu vida relacionado con este tema?</label>
+                <textarea class="textarea-field" id="real-q2" placeholder="Hechos, situaciones o rutinas diarias actuales..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>¿Qué te gustaría que cambiara y qué dificultades encuentras?</label>
+                <textarea class="textarea-field" id="real-q3" placeholder="Tus frenos internos, barreras de tiempo o entorno..."></textarea>
+            </div>
+
+            <button class="btn btn-primary" onclick="goToContractConstruction()">Definir Compromiso</button>
+        </div>
+
+        <!-- PANTALLA 6: CONSTRUCCIÓN DEL CONTRATO PIONERO -->
+        <div id="view-contract" class="view">
+            <h2>Estructura tu Contrato</h2>
+            <p style="margin-bottom: 20px;">Transforma el análisis anterior en un compromiso atómico y evaluable.</p>
+
+            <div class="form-group">
+                <label>Mi Reto (La meta inspiradora)</label>
+                <input type="text" class="input-field" id="c-reto" placeholder="Ej: Ser dueño de mi tiempo y cuidar mi bienestar mental.">
+            </div>
+
+            <div class="form-group">
+                <label>Objetivo Concreto (Qué vas a lograr)</label>
+                <input type="text" class="input-field" id="c-objetivo" placeholder="Ej: Reducir el estrés provocado por la procrastinación en los estudios.">
+            </div>
+
+            <div class="form-group">
+                <label>Acciones Concretas (Listado atómico de pasos diarios/semanales)</label>
+                <div id="action-list-container">
+                    <!-- Filas dinámicas -->
+                </div>
+                <button class="btn btn-secondary" onclick="addActionRow()" style="padding: 8px 16px; font-size: 0.85rem; margin-top: 6px;">+ Añadir acción concreta</button>
+            </div>
+
+            <div class="form-group">
+                <label>Fecha Prevista de Revisión / Finalización</label>
+                <input type="date" class="input-field" id="c-fecha">
+            </div>
+
+            <div class="form-group">
+                <label>¿Cómo sabré que lo he conseguido? (Indicador de éxito)</label>
+                <input type="text" class="input-field" id="c-exito" placeholder="Ej: He cumplido el calendario semanal de estudio durante 4 semanas consecutivas.">
+            </div>
+
+            <div class="form-group">
+                <label>Personas que pueden ayudarme / Acompañar</label>
+                <input type="text" class="input-field" id="c-ayuda" placeholder="Ej: Mi responsable de comunidad, mi compañero de nudo o mi familia.">
+            </div>
+
+            <button class="btn btn-accent btn" onclick="buildFinalDocument()">Generar documento final</button>
+        </div>
+
+        <!-- PANTALLA 7: RESUMEN FINAL -->
+        <div id="view-final" class="view">
+            <h2>Tu Hoja de Ruta Oficial</h2>
+            <p>Este documento resume tu radiografía, tu introspección y las cláusulas firmes de tu Contrato Pionero.</p>
+
+            <div class="document-preview" id="printable-doc">
+                <!-- Se rellena vía JS de forma pulida -->
+            </div>
+
+            <div class="form-group" style="padding: 0 8px;">
+                <label>Escribe aquí una anotación o firma mental para este trimestre:</label>
+                <textarea class="textarea-field" id="final-signature" placeholder="Ej: Asumo este contrato con plena libertad y ganas de mejorar mi entorno a través de mi propio cambio..."></textarea>
+            </div>
+
+            <div class="actions-stack">
+                <button class="btn btn-primary" onclick="copyContractToClipboard()">📋 Copiar Contrato (Markdown)</button>
+                <button class="btn btn-secondary" onclick="window.print()">📥 Guardar como PDF</button>
+                <button class="btn btn-secondary" style="color: #ef4444;" onclick="resetWorkflow()">🔄 Reiniciar proceso</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SCRIPT DE LÓGICA FRONTEND -->
+    <script>
+        // Estructura de Ámbitos Basada en Metodología Pioneros y Propuesta Hércules
+        const categories = [
+            {
+                key: "yo",
+                name: "Yo mismo",
+                statements: [
+                    { id: "yo_1", text: "Me organizo bien con mis tareas cotidianas y estudios." },
+                    { id: "yo_2", text: "Soy constante y termino los proyectos que empiezo." },
+                    { id: "yo_3", text: "Cuido activamente mi salud física, alimentación y ritmos de sueño." },
+                    { id: "yo_4", text: "Sé identificar mis emociones y gestionarlas en momentos críticos." }
+                ]
+            },
+            {
+                key: "relaciones",
+                name: "Relaciones",
+                statements: [
+                    { id: "rel_1", text: "Escucho activamente a los demás sin imponer mi opinión de inmediato." },
+                    { id: "rel_2", text: "Sé trabajar en equipo cooperando y asumiendo roles con madurez." },
+                    { id: "rel_3", text: "Cuido mis relaciones de amistad de forma leal, abierta y sincera." },
+                    { id: "rel_4", text: "Soy capaz de afrontar y resolver conflictos mediante el diálogo constructivo." }
+                ]
+            },
+            {
+                key: "fe",
+                name: "Fe e interioridad",
+                statements: [
+                    { id: "fe_1", text: "Dedico tiempo diario o semanal a reflexionar y conocerme." },
+                    { id: "fe_2", text: "Busco conscientemente espacios de silencio en un mundo sobreestimulado." },
+                    { id: "fe_3", text: "Mis valores profundos o mi fe influyen de manera clara en mis decisiones cotidianas." },
+                    { id: "fe_4", text: "Busco el sentido profundo a las acciones y proyectos que realizo." }
+                ]
+            },
+            {
+                key: "compromiso",
+                name: "Compromiso y Servicio",
+                statements: [
+                    { id: "com_1", text: "Me implico de forma seria cuando algo de verdad me importa." },
+                    { id: "com_2", text: "Sirvo de forma voluntaria y desinteresada a los colectivos que lo necesitan." },
+                    { id: "com_3", text: "Me preocupa activamente mejorar el entorno natural o social que me rodea." },
+                    { id: "com_4", text: "Asumo mis responsabilidades y rindo cuentas ante mi comunidad." }
+                ]
+            },
+            {
+                key: "proyecto",
+                name: "Proyecto de vida",
+                statements: [
+                    { id: "pro_1", text: "Sé hacia dónde quiero dirigir mis próximos pasos a medio/largo plazo." },
+                    { id: "pro_2", text: "Tengo objetivos personales claros fijados por mí, no por inercia." },
+                    { id: "pro_3", text: "Conozco bien cuáles son mis talentos singulares y virtudes." },
+                    { id: "pro_4", text: "Me esfuerzo activamente por entrenar y desarrollar mis capacidades." }
+                ]
+            }
+        ];
+
+        let currentCategoryIndex = 0;
+        let surveyAnswers = {}; // id -> peso numérico (1 a 4)
+        let primaryChoice = null;
+        let secondaryChoice = null;
+
+        function changeView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        // Carga e inyección del paso de la Radiografía
+        function renderSurveyStep() {
+            const container = document.getElementById('statements-container');
+            container.innerHTML = '';
+            
+            const cat = categories[currentCategoryIndex];
+            document.getElementById('survey-step-txt').innerText = `Ámbito ${currentCategoryIndex + 1} de ${categories.length}`;
+            document.getElementById('survey-category-name').innerText = cat.name;
+            
+            const progressPercent = ((currentCategoryIndex) / categories.length) * 100;
+            document.getElementById('survey-progress').style.width = `${progressPercent}%`;
+
+            cat.statements.forEach(st => {
+                const currentVal = surveyAnswers[st.id] || null;
+                
+                const card = document.createElement('div');
+                card.className = 'survey-card';
+                card.innerHTML = `
+                    <div class="survey-statement">${st.text}</div>
+                    <div class="frequency-selector">
+                        <button class="freq-btn ${currentVal === 1 ? 'selected' : ''}" onclick="saveAnswer('${st.id}', 1, this)">Nunca</button>
+                        <button class="freq-btn ${currentVal === 2 ? 'selected' : ''}" onclick="saveAnswer('${st.id}', 2, this)">A veces</button>
+                        <button class="freq-btn ${currentVal === 3 ? 'selected' : ''}" onclick="saveAnswer('${st.id}', 3, this)">Bastante</button>
+                        <button class="freq-btn ${currentVal === 4 ? 'selected' : ''}" onclick="saveAnswer('${st.id}', 4, this)">Mucho</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            const nextBtn = document.getElementById('btn-next-survey');
+            if (currentCategoryIndex === categories.length - 1) {
+                nextBtn.innerText = "Finalizar Radiografía";
+            } else {
+                nextBtn.innerText = "Siguiente Ámbito";
+            }
+        }
+
+        function saveAnswer(statementId, value, btnEl) {
+            // Cambiar clases visuales dentro del control segmentado
+            const parent = btnEl.parentElement;
+            parent.querySelectorAll('.freq-btn').forEach(b => b.classList.remove('selected'));
+            btnEl.classList.add('selected');
+            
+            surveyAnswers[statementId] = value;
+            localStorage.setItem('pionero_answers', JSON.stringify(surveyAnswers));
+        }
+
+        function nextSurveyStep() {
+            // Validar que se han contestado todas las preguntas del ámbito actual
+            const cat = categories[currentCategoryIndex];
+            const allAnswered = cat.statements.every(st => surveyAnswers[st.id] !== undefined);
+            
+            if(!allAnswered) {
+                alert("Por favor, marca una opción para cada afirmación antes de continuar.");
+                return;
+            }
+
+            if(currentCategoryIndex < categories.length - 1) {
+                currentCategoryIndex++;
+                renderSurveyStep();
+                window.scrollTo(0,0);
+            } else {
+                // Ir a la fase de análisis y sugerencias analíticas
+                processSuggestions();
+            }
+        }
+
+        // Algoritmo de detección inteligente de áreas críticas de nudos pioneros
+        function processSuggestions() {
+            let categoryScores = [];
+
+            categories.forEach(cat => {
+                let total = 0;
+                cat.statements.forEach(st => {
+                    total += surveyAnswers[st.id] || 0;
+                });
+                // Puntuación promedio (mientras más baja, más margen de mejora / prioridad)
+                let avg = total / cat.statements.length;
+                categoryScores.push({ key: cat.key, name: cat.name, score: avg });
+            });
+
+            // Ordenamos de menor a mayor puntuación
+            categoryScores.sort((a, b) => a.score - b.score);
+
+            const sugBox = document.getElementById('suggestions-box');
+            sugBox.innerHTML = '';
+
+            // Ofrecemos feedback cualitativo en base al resultado del algoritmo
+            categoryScores.forEach((c, index) => {
+                let phrase = "";
+                if(index === 0) phrase = `💡 *Prioridad Alta:* Los datos muestran que en el ámbito *"${c.name}"* tienes nudos importantes que desatar. Sería un excelente núcleo para tu contrato.`;
+                else if(index === 1) phrase = `🌱 *Área Recomendada:* Trabajar en *"${c.name}"* te ofrecerá un reto sumamente interesante para equilibrar tu progresión.`;
+                else if(index === 2) phrase = `🔍 *Espacio de Optimización:* Quizás te gustaría profundizar en *"${c.name}"* para pulir aspectos que tienes a medio camino.`;
+                else phrase = `✨ *Fortaleza Estable:* En *"${c.name}"* te manejas bien, pero siempre puedes buscar un reto avanzado de liderazgo o servicio.`;
+
+                sugBox.innerHTML += `
+                    <div class="suggestion-item">
+                        <p style="color: var(--text-main); font-weight: 500;">${phrase}</p>
+                    </div>
+                `;
+            });
+
+            changeView('view-suggestions');
+        }
+
+        function setupChoicesView() {
+            const container = document.getElementById('choices-container');
+            container.innerHTML = '';
+            
+            primaryChoice = null;
+            secondaryChoice = null;
+
+            categories.forEach(cat => {
+                const div = document.createElement('div');
+                div.className = 'choice-card';
+                div.id = `choice-${cat.key}`;
+                div.innerHTML = `
+                    <div>
+                        <strong style="font-size: 1.05rem;">${cat.name}</strong>
+                    </div>
+                    <div id="badge-choice-${cat.key}"></div>
+                `;
+                div.onclick = () => selectChoice(cat.key);
+                container.appendChild(div);
+            });
+
+            changeView('view-choices');
+        }
+
+        function selectChoice(key) {
+            const card = document.getElementById(`choice-${key}`);
+            const badgeZone = document.getElementById(`badge-choice-${key}`);
+
+            if(primaryChoice === key) {
+                primaryChoice = null;
+                card.className = 'choice-card';
+                badgeZone.innerHTML = '';
+            } else if(secondaryChoice === key) {
+                secondaryChoice = null;
+                card.className = 'choice-card';
+                badgeZone.innerHTML = '';
+            } else {
+                if(!primaryChoice) {
+                    primaryChoice = key;
+                    card.className = 'choice-card main-selected';
+                    badgeZone.innerHTML = `<span class="badge-indicator main">Principal</span>`;
+                } else if(!secondaryChoice) {
+                    secondaryChoice = key;
+                    card.className = 'choice-card sub-selected';
+                    badgeZone.innerHTML = `<span class="badge-indicator sub">Secundaria</span>`;
+                } else {
+                    // Reemplazo inteligente de la secundaria
+                    const oldSub = document.getElementById(`choice-${secondaryChoice}`);
+                    if(oldSub) {
+                        oldSub.className = 'choice-card';
+                        document.getElementById(`badge-choice-${secondaryChoice}`).innerHTML = '';
+                    }
+                    secondaryChoice = key;
+                    card.className = 'choice-card sub-selected';
+                    badgeZone.innerHTML = `<span class="badge-indicator sub">Secundaria</span>`;
+                }
+            }
+        }
+
+        function goToRealityAnalysis() {
+            if(!primaryChoice) {
+                alert("Debes elegir al menos un Ámbito de Crecimiento Principal.");
+                return;
+            }
+            const cat = categories.find(c => c.key === primaryChoice);
+            document.getElementById('reality-subtitle').innerText = `Enfoque Principal: ${cat.name}`;
+            
+            // Cargar datos previos si existen
+            document.getElementById('real-q1').value = localStorage.getItem('pionero_rq1') || '';
+            document.getElementById('real-q2').value = localStorage.getItem('pionero_rq2') || '';
+            document.getElementById('real-q3').value = localStorage.getItem('pionero_rq3') || '';
+
+            changeView('view-reality');
+        }
+
+        function goToContractConstruction() {
+            // Guardar análisis de realidad
+            localStorage.setItem('pionero_rq1', document.getElementById('real-q1').value);
+            localStorage.setItem('pionero_rq2', document.getElementById('real-q2').value);
+            localStorage.setItem('pionero_rq3', document.getElementById('real-q3').value);
+
+            // Preparar listado de acciones atómicas
+            const actionContainer = document.getElementById('action-list-container');
+            actionContainer.innerHTML = '';
+            
+            // Insertamos 2 por defecto para guiar al usuario
+            addActionRow("Ej: Dedicar 15 minutos de lectura o silencio antes de dormir.");
+            addActionRow("Ej: Dejar el móvil fuera de la habitación a partir de las 22:30.");
+
+            // Cargar campos básicos
+            document.getElementById('c-reto').value = localStorage.getItem('pionero_c_reto') || '';
+            document.getElementById('c-objetivo').value = localStorage.getItem('pionero_c_obj') || '';
+            document.getElementById('c-exito').value = localStorage.getItem('pionero_c_exito') || '';
+            document.getElementById('c-ayuda').value = localStorage.getItem('pionero_c_ayuda') || '';
+            
+            // Fijar fecha por defecto (3 meses vista, alineado con el trimestre pionero)
+            if(!document.getElementById('c-fecha').value) {
+                let d = new Date();
+                d.setMonth(d.getMonth() + 3);
+                document.getElementById('c-fecha').value = d.toISOString().split('T')[0];
+            }
+
+            changeView('view-contract');
+        }
+
+        function addActionRow(placeholderText = "Escribe una acción concreta...") {
+            const container = document.getElementById('action-list-container');
+            const row = document.createElement('div');
+            row.className = 'dynamic-list-item';
+            row.innerHTML = `
+                <input type="text" class="input-field action-item-input" placeholder="${placeholderText}">
+                <button class="btn-remove" onclick="this.parentElement.remove()">✕</button>
+            `;
+            container.appendChild(row);
+        }
+
+        function buildFinalDocument() {
+            // Persistencia de inputs del contrato
+            localStorage.setItem('pionero_c_reto', document.getElementById('c-reto').value);
+            localStorage.setItem('pionero_c_obj', document.getElementById('c-objetivo').value);
+            localStorage.setItem('pionero_c_exito', document.getElementById('c-exito').value);
+            localStorage.setItem('pionero_c_ayuda', document.getElementById('c-ayuda').value);
+
+            const mainCat = categories.find(c => c.key === primaryChoice);
+            const subCat = secondaryChoice ? categories.find(c => c.key === secondaryChoice) : null;
+            
+            // Recopilar acciones dinámicas
+            let actions = [];
+            document.querySelectorAll('.action-item-input').forEach(input => {
+                if(input.value.trim() !== "") actions.push(input.value.trim());
+            });
+
+            const docZone = document.getElementById('printable-doc');
+            
+            let actionsHTML = actions.map(act => `<li>${act}</li>`).join('');
+            if(actions.length === 0) actionsHTML = `<li>No se definieron acciones específicas.</li>`;
+
+            // Estructura del documento formal de compromiso
+            docZone.innerHTML = `
+                <div class="doc-section" style="text-align: center;">
+                    <h2 style="font-family:'Fredoka', sans-serif; color: var(--primary);">CONTRATO PIONERO</h2>
+                    <p style="font-size:0.85rem;">Movimiento Scout Católico • Documentación de Progreso</p>
+                </div>
+                
+                <div class="doc-section">
+                    <div class="doc-meta">Ámbitos Seleccionados</div>
+                    <div class="doc-body">🎯 Principal: ${mainCat.name}</div>
+                    ${subCat ? `<div class="doc-body" style="margin-top:4px;">🌱 Secundario: ${subCat.name}</div>` : ''}
+                </div>
+
+                <div class="doc-section">
+                    <div class="doc-meta">Análisis de Situación Inicial</div>
+                    <p style="color:var(--text-main); font-size:0.95rem; margin-top:4px;"><strong>Motivación:</strong> ${document.getElementById('real-q1').value || 'No especificado'}</p>
+                    <p style="color:var(--text-main); font-size:0.95rem; margin-top:4px;"><strong>Realidad actual:</strong> ${document.getElementById('real-q2').value || 'No especificado'}</p>
+                </div>
+
+                <div class="doc-section">
+                    <div class="doc-meta">Mi Reto Personal</div>
+                    <div class="doc-body" style="font-size:1.15rem; color:var(--accent); font-weight:700;">"${document.getElementById('c-reto').value || 'Sin título'}"</div>
+                </div>
+
+                <div class="doc-section">
+                    <div class="doc-meta">Objetivo Operativo</div>
+                    <div class="doc-body">${document.getElementById('c-objetivo').value || 'No definido'}</div>
+                </div>
+
+                <div class="doc-section">
+                    <div class="doc-meta">Plan de Acciones Estructuradas</div>
+                    <ul class="doc-list">
+                        ${actionsHTML}
+                    </ul>
+                </div>
+
+                <div class="doc-section" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <div class="doc-meta">Fecha de Revisión</div>
+                        <div class="doc-body" style="font-size:0.95rem;">📅 ${document.getElementById('c-fecha').value}</div>
+                    </div>
+                    <div>
+                        <div class="doc-meta">Acompañamiento</div>
+                        <div class="doc-body" style="font-size:0.95rem;">👥 ${document.getElementById('c-ayuda').value || 'Comunidad Pionera'}</div>
+                    </div>
+                </div>
+
+                <div class="doc-section">
+                    <div class="doc-meta">Criterio de Evaluación / Éxito</div>
+                    <div class="doc-body" style="font-style: italic; font-size:0.95rem;">"${document.getElementById('c-exito').value || 'Por determinar'}"</div>
+                </div>
+            `;
+
+            changeView('view-final');
+        }
+
+        function copyContractToClipboard() {
+            // Exportar en formato estructurado Markdown ideal para Notion o chats de equipo
+            const mainCat = categories.find(c => c.key === primaryChoice);
+            let rawText = `### ⚜️ MI CONTRATO PIONERO ⚜️\n\n`;
+            rawText += `* **Ámbito Principal:** ${mainCat.name}\n`;
+            rawText += `* **Mi Reto:** ${document.getElementById('c-reto').value}\n`;
+            rawText += `* **Objetivo:** ${document.getElementById('c-objetivo').value}\n\n`;
+            rawText += `#### 🏃 Acciones de Crecimiento:\n`;
+            
+            document.querySelectorAll('.action-item-input').forEach(input => {
+                if(input.value.trim() !== "") rawText += `- ${input.value.trim()}\n`;
+            });
+            
+            rawText += `\n* **Fecha Límite:** ${document.getElementById('c-fecha').value}\n`;
+            rawText += `* **Criterio de Éxito:** ${document.getElementById('c-exito').value}\n`;
+            rawText += `* **Anotación/Firma:** "${document.getElementById('final-signature').value}"`;
+
+            navigator.clipboard.writeText(rawText).then(() => {
+                alert("Resumen de Contrato copiado en formato estructurado (Markdown). Ya puedes guardarlo en tu cuaderno digital, Notion o enviárselo por WhatsApp a tu animador de comunidad.");
+            }).catch(() => {
+                alert("Hubo un percance al copiar. Selecciona y copia el texto del documento directamente.");
+            });
+        }
+
+        function resetWorkflow() {
+            if(confirm("¿Estás seguro de que deseas resetear los datos del Contrato actual para iniciar un análisis limpio?")) {
+                localStorage.clear();
+                surveyAnswers = {};
+                currentCategoryIndex = 0;
+                primaryChoice = null;
+                secondaryChoice = null;
+                changeView('view-welcome');
+            }
+        }
+
+        // Iniciar el ciclo de vida de la aplicación al cargar
+        window.onload = function() {
+            surveyAnswers = JSON.parse(localStorage.getItem('pionero_answers')) || {};
+            renderSurveyStep();
+        };
+    </script>
+</body>
+</html>
